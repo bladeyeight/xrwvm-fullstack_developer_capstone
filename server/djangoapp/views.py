@@ -7,7 +7,6 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
 from datetime import datetime
-
 from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 import logging
@@ -24,6 +23,7 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 def get_cars(request):
+    print('sammyrequest', request)
     count = CarMake.objects.filter().count()
     print(count)
     if(count == 0):
@@ -94,10 +94,14 @@ def registration(request):
 #Update the `get_dealerships` render list of dealerships all by default, particular state if state is passed
 def get_dealerships(request, state="All"):
     if(state == "All"):
+        print('StateisAll')
         endpoint = "/fetchDealers"
     else:
         endpoint = "/fetchDealers/"+state
+    print('sammyrequest', request)
+    print('sammyendpoint', endpoint)
     dealerships = get_request(endpoint)
+    print('SammyDealerships', dealerships)
     return JsonResponse({"status":200,"dealers":dealerships})
 
 # Create a `get_dealer_reviews` view to render the reviews of a dealer
@@ -105,7 +109,9 @@ def get_dealer_reviews(request, dealer_id):
     # if dealer id has been provided
     if(dealer_id):
         endpoint = "/fetchReviews/dealer/"+str(dealer_id)
+        # print('SammyFetchReviews', endpoint, dealer_id, request)
         reviews = get_request(endpoint)
+        print('SammyFetchReviews', reviews)
         for review_detail in reviews:
             response = analyze_review_sentiments(review_detail['review'])
             print(response)
